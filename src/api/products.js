@@ -9,3 +9,13 @@ export async function fetchAllProducts() {
 
     return response.json();
 }
+
+export async function fetchProductById(id) {
+    const response = await fetch(`${BASE_URL}/products/${id}`);
+
+    if (!response.ok) {
+        throw new Error("Failed to load Product");
+    }
+
+    return response.json();
+}

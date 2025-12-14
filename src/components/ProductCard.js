@@ -1,18 +1,16 @@
+import { useRouter } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text } from 'react-native';
 
 export default function ProductCard({ product }) {
+    const router = useRouter();
     return (
-        <Pressable style={styles.card}>
+        <Pressable style={styles.card}
+            onPress={() => router.push(`/product/${product.id}`)}>
             <Image
                 source={{ uri: product.image }}
                 style={styles.image}
-                resizeMode="contain"
-            />
-
-            <Text numberOfLines={2} style={styles.title}>
-                {product.title}
-            </Text>
-
+                resizeMode="contain" />
+            <Text numberOfLines={2} style={styles.title}>{product.title}</Text>
             <Text style={styles.price}>₹ {product.price}</Text>
         </Pressable>
     );
