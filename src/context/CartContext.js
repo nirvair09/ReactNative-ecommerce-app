@@ -21,8 +21,32 @@ function cartReducer(state, action) {
 
             // add new product
             return [...state, { ...action.product, quantity: 1 }];
+        };
+
+        case "REMOVE_FROM_CART": {
+            return state.filter((item) => item.id !== action.id);
         }
+
+        case "DECREASE_QUANTITY": {
+            return state.map((item) =>
+                item.id === action.id ?
+                    { ...item, quantity: item.quantity - 1 } : item).filter((item) => item.quantity > 0);
+        }
+
+        case "INCREASE_QUANTITY": {
+            return state.map((item) =>
+                item.id === action.id ?
+                    { ...item, quantity: item.quantity + 1 } : item);
+        }
+
+        case "CLEAR_CART": {
+            return [];
+        }
+
+        default: return state;
     }
+
+
 }
 
 
