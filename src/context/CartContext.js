@@ -1,4 +1,7 @@
-import { createContext } from "react";
+import { createContext, useReducer } from "react";
+
+console.log('CartContext - useReducer defined:', !!useReducer);
+
 
 export const CartContext = createContext();
 
@@ -18,7 +21,7 @@ function cartReducer(state, action) {
                         : item
                 );
             }
-
+            console.log(state);
             // add new product
             return [...state, { ...action.product, quantity: 1 }];
         };
@@ -51,8 +54,11 @@ function cartReducer(state, action) {
 
 
 export function CartProvider({ children }) {
+    console.log('CartProvider rendering');
+    const [cart, dispatch] = useReducer(cartReducer, [])
+
     return (
-        <CartContext.Provider >
+        <CartContext.Provider value={{ cart, dispatch }}>
             {children}
         </CartContext.Provider>
     );

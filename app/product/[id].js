@@ -1,7 +1,7 @@
 
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     Image,
@@ -11,11 +11,10 @@ import {
     Text,
     View,
 } from 'react-native';
-
-
 import { fetchProductById } from '../../src/api/products';
-
+import { CartContext } from '../../src/context/CartContext';
 export default function ProductDetails() {
+    const { dispatch } = useContext(CartContext);
     const router = useRouter();
     const { id } = useLocalSearchParams();
     const [product, setProduct] = useState(null);
@@ -57,12 +56,25 @@ export default function ProductDetails() {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Pressable onPress={() => router.back()}>
+                <Pressable onPress={() => {
+                    if (router.canGoBack()) {
+                        router.back();
+                    } else {
+                        router.replace('/');
+                    }
+                }}>
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </Pressable>
             </View>
             <Image source={{ uri: product.image }} style={styles.image} />
             <Text>{product.title}</Text>
+            <Pressable style={styles.addButton}
+                onPress={() =>
+                    dispatch({ type: "ADD_TO_CART", product })
+                }
+            >
+                <Text style={styles.addButtonText}>Add to Cart</Text>
+            </Pressable>
             <Text style={styles.price}>₹ {product.price}</Text>
             <Text style={styles.description}>{product.description}</Text>
         </ScrollView>
@@ -109,5 +121,18 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 12,
     },
+    addButton: {
+        backgroundColor: '#2874f0',
+        padding: 14,
+        borderRadius: 6,
+        marginBottom: 20,
+    },
+    addButtonText: {
+        color: '#fff',
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+
 
 });
