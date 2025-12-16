@@ -7,6 +7,7 @@ import {
     Pressable,
     StyleSheet,
     Text,
+    TextInput,
     View,
 } from "react-native";
 
@@ -15,6 +16,8 @@ import ProductCard from "../src/components/ProductCard";
 import { CartContext } from "../src/context/CartContext";
 
 export default function Home() {
+    const [search, setSearch] = useState("");
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -27,6 +30,7 @@ export default function Home() {
             try {
                 const data = await fetchAllProducts();
                 setProducts(data);
+                setFilteredProducts(data);
             } catch (err) {
                 setError(err.message || "Failed to load products");
             } finally {
@@ -36,6 +40,24 @@ export default function Home() {
 
         loadProducts();
     }, []);
+
+
+    useEffect(() => {
+
+        const timer = setTimeout(() => {
+            if (search.trim() === "") {
+                setFilteredProducts(products)
+            } else {
+                const lower = search.toLowerCase();
+                const filtered = products.filter((item) =>
+                    item.title.toLowerCase().includes(lower));
+                setFilteredProducts(filtered);
+            }
+        }, 300)
+
+        return () => clearTimeout(timer);
+
+    }, [search, products])
 
     if (loading) {
         return (
@@ -72,9 +94,19 @@ export default function Home() {
                 </Pressable>
             </View>
 
+            <View style={styles.searchContainer}>
+                <TextInput
+                    placeholder="Search products..."
+                    value={search}
+                    onChangeText={setSearch}
+                    style={styles.searchInput}
+                    clearButtonMode="while-editing"
+                />
+            </View>
+
             {/* PRODUCT LIST */}
             <FlatList
-                data={products}
+                data={filteredProducts}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
                 renderItem={({ item }) => (
@@ -133,5 +165,17 @@ const styles = StyleSheet.create({
     error: {
         color: "red",
         fontSize: 16,
+    },
+    searchContainer: {
+        backgroundColor: "#fff",
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+    },
+    searchInput: {
+        backgroundColor: "#f0f0f0",
+        borderRadius: 6,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        fontSize: 14,
     },
 });
