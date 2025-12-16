@@ -27,18 +27,18 @@ function cartReducer(state, action) {
         };
 
         case "REMOVE_FROM_CART": {
-            return state.filter((item) => item.id !== action.id);
+            return state.filter((item) => item.id !== action.product.id);
         }
 
         case "DECREASE_QUANTITY": {
             return state.map((item) =>
-                item.id === action.id ?
+                item.id === action.product.id ?
                     { ...item, quantity: item.quantity - 1 } : item).filter((item) => item.quantity > 0);
         }
 
         case "INCREASE_QUANTITY": {
             return state.map((item) =>
-                item.id === action.id ?
+                item.id === action.product.id ?
                     { ...item, quantity: item.quantity + 1 } : item);
         }
 
