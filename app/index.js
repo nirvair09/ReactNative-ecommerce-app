@@ -2,16 +2,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import {
-    ActivityIndicator,
     FlatList,
     Pressable,
     ScrollView,
     StyleSheet,
     Text,
     TextInput,
-    View,
+    View
 } from "react-native";
 
+import ProductSkeleton from "../components/ProductSkeleton";
 import { fetchAllProducts } from "../src/api/products";
 import ProductCard from "../src/components/ProductCard";
 import { CartContext } from "../src/context/CartContext";
@@ -81,9 +81,18 @@ export default function Home() {
     /* ---------------- LOADING / ERROR ---------------- */
     if (loading) {
         return (
-            <View style={styles.center}>
-                <ActivityIndicator size="large" />
-                <Text>Loading products...</Text>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.headerTitle}>Products</Text>
+                </View>
+                <FlatList
+                    data={Array.from({ length: 8 })}
+                    keyExtractor={(_, index) => index.toString()}
+                    numColumns={2}
+                    renderItem={() => <ProductSkeleton />}
+                    contentContainerStyle={styles.list}
+                    showsVerticalScrollIndicator={false}
+                />
             </View>
         );
     }
